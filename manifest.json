@@ -2,7 +2,7 @@
   "name": "SignSpeak - Sign Language Translator",
   "short_name": "SignSpeak",
   "description": "Real-time bidirectional sign language translation with avatar",
-  "start_url": "/index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4F46E5",
