@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4F46E5">
+  <title>SignSpeak - Settings</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header-custom">
+    <div class="container-custom">
+      <div class="header-content">
+        <a href="home.html" class="logo">🤟 SignSpeak</a>
+        
+        <nav class="nav-custom">
+          <a href="home.html" class="nav-link-custom">Home</a>
+          <a href="translate.html" class="nav-link-custom">Translate</a>
+          <a href="settings.html" class="nav-link-custom active">Settings</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container-custom" style="padding: 24px 20px; max-width: 800px;">
+    <h1 class="mb-4">Settings</h1>
+
+    <!-- Appearance -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">Appearance</h2>
+      
+      <div class="setting-item">
+        <div class="flex justify-between align-center">
+          <div>
+            <div style="font-weight: 600;">Dark Mode</div>
+            <div class="text-muted" style="font-size: 14px;">Enable dark theme</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detection Settings -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">Detection Settings</h2>
+      
+      <div class="setting-item mb-4">
+        <div class="mb-2">
+          <label class="form-label-custom">Hand Detection Sensitivity</label>
+          <div class="text-muted" style="font-size: 12px;">Current: <span id="handSensValue">0.7</span></div>
+        </div>
+        <input type="range" class="form-range" id="handSensitivity" min="0.5" max="0.9" step="0.05" value="0.7">
+      </div>
+
+      <div class="setting-item mb-4">
+        <div class="mb-2">
+          <label class="form-label-custom">Face Detection Sensitivity</label>
+          <div class="text-muted" style="font-size: 12px;">Current: <span id="faceSensValue">0.6</span></div>
+        </div>
+        <input type="range" class="form-range" id="faceSensitivity" min="0.5" max="0.9" step="0.05" value="0.6">
+      </div>
+
+      <div class="setting-item">
+        <div class="flex justify-between align-center">
+          <div>
+            <div style="font-weight: 600;">Show Hand Landmarks</div>
+            <div class="text-muted" style="font-size: 14px;">Display hand tracking points</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="showLandmarksToggle">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Camera Settings -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">Camera Settings</h2>
+      
+      <div class="setting-item mb-3">
+        <label class="form-label-custom">Camera Resolution</label>
+        <select class="form-control-custom" id="cameraResolution">
+          <option value="sd">SD (640x480)</option>
+          <option value="hd" selected>HD (1280x720)</option>
+          <option value="fhd">Full HD (1920x1080)</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <button id="calibrateBtn" class="btn-primary-custom w-100">Calibrate Sensors</button>
+      </div>
+    </section>
+
+    <!-- Avatar Settings -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">Avatar Settings</h2>
+      
+      <div class="setting-item mb-4">
+        <div class="mb-2">
+          <label class="form-label-custom">Animation Speed</label>
+          <div class="text-muted" style="font-size: 12px;">Current: <span id="animSpeedValue">1.0</span>x</div>
+        </div>
+        <input type="range" class="form-range" id="animationSpeed" min="0.5" max="2.0" step="0.1" value="1.0">
+      </div>
+
+      <div class="setting-item">
+        <button onclick="window.location.href='avatar-customization.html'" class="btn-outline-custom w-100">
+          Customize Avatar
+        </button>
+      </div>
+    </section>
+
+    <!-- Audio Settings -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">Audio & Feedback</h2>
+      
+      <div class="setting-item mb-3">
+        <div class="flex justify-between align-center">
+          <div>
+            <div style="font-weight: 600;">Sound Effects</div>
+            <div class="text-muted" style="font-size: 14px;">Play sound feedback</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="soundToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <div class="flex justify-between align-center">
+          <div>
+            <div style="font-weight: 600;">Vibration</div>
+            <div class="text-muted" style="font-size: 14px;">Haptic feedback (mobile only)</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="vibrationToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Translation Settings -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">Translation Settings</h2>
+      
+      <div class="setting-item mb-3">
+        <div class="flex justify-between align-center">
+          <div>
+            <div style="font-weight: 600;">Auto Translate</div>
+            <div class="text-muted" style="font-size: 14px;">Translate signs automatically</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="autoTranslateToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="setting-item">
+        <div class="flex justify-between align-center">
+          <div>
+            <div style="font-weight: 600;">Save History</div>
+            <div class="text-muted" style="font-size: 14px;">Keep translation history</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="saveHistoryToggle" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Management -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">Data Management</h2>
+      
+      <div class="setting-item mb-3">
+        <button id="exportDataBtn" class="btn-outline-custom w-100">Export My Data</button>
+      </div>
+
+      <div class="setting-item mb-3">
+        <button id="importDataBtn" class="btn-outline-custom w-100">Import Data</button>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+      </div>
+
+      <div class="setting-item mb-3">
+        <button id="clearHistoryBtn" class="btn-outline-custom w-100">Clear Translation History</button>
+      </div>
+
+      <div class="setting-item">
+        <button id="resetSettingsBtn" class="btn-outline-custom w-100">Reset to Defaults</button>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="card-custom mb-3">
+      <h2 class="mb-3">About</h2>
+      
+      <div class="setting-item">
+        <div class="text-muted" style="font-size: 14px;">
+          <div class="mb-2"><strong>Version:</strong> 1.0.0</div>
+          <div class="mb-2"><strong>Sign Language:</strong> ASL (American Sign Language)</div>
+          <div><strong>Detection:</strong> MediaPipe Hands & Face Mesh</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Logout -->
+    <section class="mb-4">
+      <button id="logoutBtn" class="btn-outline-custom w-100" style="color: var(--danger-color); border-color: var(--danger-color);">
+        Logout
+      </button>
+    </section>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/utils.js"></script>
+  <script src="../js/storage-manager.js"></script>
+  <script src="../js/settings-manager.js"></script>
+
+  <script>
+    let currentUserId = null;
+
+    // Initialize
+    async function init() {
+      try {
+        currentUserId = Utils.getLocalStorage('currentUserId');
+        if (!currentUserId) {
+          window.location.href = '../index.html';
+          return;
+        }
+
+        await SettingsManager.init(currentUserId);
+        loadSettings();
+
+      } catch (error) {
+        console.error('Initialization error:', error);
+        Utils.showToast('Failed to load settings', 'error');
+      }
+    }
+
+    // Load settings into UI
+    function loadSettings() {
+      const settings = SettingsManager.getAllSettings();
+
+      // Dark mode
+      document.getElementById('darkModeToggle').checked = settings.theme === 'dark';
+
+      // Sensitivity
+      document.getElementById('handSensitivity').value = settings.handSensitivity || 0.7;
+      document.getElementById('handSensValue').textContent = settings.handSensitivity || 0.7;
+      
+      document.getElementById('faceSensitivity').value = settings.faceSensitivity || 0.6;
+      document.getElementById('faceSensValue').textContent = settings.faceSensitivity || 0.6;
+
+      // Show landmarks
+      document.getElementById('showLandmarksToggle').checked = settings.showLandmarks || false;
+
+      // Camera resolution
+      document.getElementById('cameraResolution').value = settings.cameraResolution || 'hd';
+
+      // Animation speed
+      document.getElementById('animationSpeed').value = settings.avatarAnimationSpeed || 1.0;
+      document.getElementById('animSpeedValue').textContent = settings.avatarAnimationSpeed || 1.0;
+
+      // Sound & vibration
+      document.getElementById('soundToggle').checked = settings.soundEnabled !== false;
+      document.getElementById('vibrationToggle').checked = settings.vibrationEnabled !== false;
+
+      // Translation
+      document.getElementById('autoTranslateToggle').checked = settings.autoTranslate !== false;
+      document.getElementById('saveHistoryToggle').checked = settings.saveHistory !== false;
+    }
+
+    // Dark mode toggle
+    document.getElementById('darkModeToggle').addEventListener('change', async (e) => {
+      const theme = e.target.checked ? 'dark' : 'light';
+      await SettingsManager.updateSetting('theme', theme);
+    });
+
+    // Hand sensitivity
+    document.getElementById('handSensitivity').addEventListener('input', (e) => {
+      const value = parseFloat(e.target.value);
+      document.getElementById('handSensValue').textContent = value;
+    });
+
+    document.getElementById('handSensitivity').addEventListener('change', async (e) => {
+      const value = parseFloat(e.target.value);
+      await SettingsManager.updateSetting('handSensitivity', value);
+      Utils.showToast('Hand sensitivity updated', 'success');
+    });
+
+    // Face sensitivity
+    document.getElementById('faceSensitivity').addEventListener('input', (e) => {
+      const value = parseFloat(e.target.value);
+      document.getElementById('faceSensValue').textContent = value;
+    });
+
+    document.getElementById('faceSensitivity').addEventListener('change', async (e) => {
+      const value = parseFloat(e.target.value);
+      await SettingsManager.updateSetting('faceSensitivity', value);
+      Utils.showToast('Face sensitivity updated', 'success');
+    });
+
+    // Show landmarks
+    document.getElementById('showLandmarksToggle').addEventListener('change', async (e) => {
+      await SettingsManager.updateSetting('showLandmarks', e.target.checked);
+    });
+
+    // Camera resolution
+    document.getElementById('cameraResolution').addEventListener('change', async (e) => {
+      await SettingsManager.updateSetting('cameraResolution', e.target.value);
+      Utils.showToast('Camera resolution updated', 'success');
+    });
+
+    // Animation speed
+    document.getElementById('animationSpeed').addEventListener('input', (e) => {
+      const value = parseFloat(e.target.value);
+      document.getElementById('animSpeedValue').textContent = value;
+    });
+
+    document.getElementById('animationSpeed').addEventListener('change', async (e) => {
+      const value = parseFloat(e.target.value);
+      await SettingsManager.updateSetting('avatarAnimationSpeed', value);
+      Utils.showToast('Animation speed updated', 'success');
+    });
+
+    // Sound toggle
+    document.getElementById('soundToggle').addEventListener('change', async (e) => {
+      await SettingsManager.updateSetting('soundEnabled', e.target.checked);
+    });
+
+    // Vibration toggle
+    document.getElementById('vibrationToggle').addEventListener('change', async (e) => {
+      await SettingsManager.updateSetting('vibrationEnabled', e.target.checked);
+    });
+
+    // Auto translate
+    document.getElementById('autoTranslateToggle').addEventListener('change', async (e) => {
+      await SettingsManager.updateSetting('autoTranslate', e.target.checked);
+    });
+
+    // Save history
+    document.getElementById('saveHistoryToggle').addEventListener('change', async (e) => {
+      await SettingsManager.updateSetting('saveHistory', e.target.checked);
+    });
+
+    // Calibrate sensors
+    document.getElementById('calibrateBtn').addEventListener('click', () => {
+      Utils.showToast('Please use the translation screen to calibrate sensors', 'info');
+      setTimeout(() => {
+        window.location.href = 'translate.html';
+      }, 1500);
+    });
+
+    // Export data
+    document.getElementById('exportDataBtn').addEventListener('click', async () => {
+      try {
+        const data = await StorageManager.exportData(currentUserId);
+        const json = JSON.stringify(data, null, 2);
+        Utils.downloadFile(json, `signspeak-data-${Date.now()}.json`, 'application/json');
+        Utils.showToast('Data exported successfully', 'success');
+      } catch (error) {
+        console.error('Export error:', error);
+        Utils.showToast('Failed to export data', 'error');
+      }
+    });
+
+    // Import data
+    document.getElementById('importDataBtn').addEventListener('click', () => {
+      document.getElementById('importFileInput').click();
+    });
+
+    document.getElementById('importFileInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          await StorageManager.importData(data);
+          Utils.showToast('Data imported successfully', 'success');
+          location.reload();
+        } catch (error) {
+          console.error('Import error:', error);
+          Utils.showToast('Failed to import data', 'error');
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    // Clear history
+    document.getElementById('clearHistoryBtn').addEventListener('click', async () => {
+      if (confirm('Are you sure you want to clear all translation history?')) {
+        try {
+          await StorageManager.clearTranslationHistory(currentUserId);
+          Utils.showToast('History cleared', 'success');
+        } catch (error) {
+          console.error('Clear history error:', error);
+          Utils.showToast('Failed to clear history', 'error');
+        }
+      }
+    });
+
+    // Reset settings
+    document.getElementById('resetSettingsBtn').addEventListener('click', async () => {
+      if (confirm('Reset all settings to defaults?')) {
+        try {
+          await SettingsManager.resetToDefaults();
+          loadSettings();
+          Utils.showToast('Settings reset to defaults', 'success');
+        } catch (error) {
+          console.error('Reset error:', error);
+          Utils.showToast('Failed to reset settings', 'error');
+        }
+      }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (confirm('Are you sure you want to logout?')) {
+        Utils.removeLocalStorage('currentUserId');
+        window.location.href = '../index.html';
+      }
+    });
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+
+  <style>
+    .setting-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .dark-mode .setting-item {
+      border-bottom-color: var(--border-dark);
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+    }
+
+    .form-range {
+      width: 100%;
+    }
+  </style>
+</body>
+</html>

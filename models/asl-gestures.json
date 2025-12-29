@@ -1,0 +1,252 @@
+{
+  "FIST": {
+    "text": "A",
+    "type": "letter",
+    "description": "Make a fist with thumb beside fingers"
+  },
+  "OPEN_HAND": {
+    "text": "B",
+    "type": "letter",
+    "description": "Flat hand with fingers together, thumb across palm"
+  },
+  "OK": {
+    "text": "F",
+    "type": "letter",
+    "description": "Touch thumb and index finger, other fingers extended"
+  },
+  "POINTING": {
+    "text": "D",
+    "type": "letter",
+    "description": "Index finger up, other fingers and thumb together"
+  },
+  "PEACE": {
+    "text": "V",
+    "type": "letter",
+    "description": "Index and middle fingers extended in V shape"
+  },
+  "THUMBS_UP": {
+    "text": "GOOD",
+    "type": "word",
+    "description": "Thumb extended upward, other fingers closed"
+  },
+  "THUMBS_DOWN": {
+    "text": "BAD",
+    "type": "word",
+    "description": "Thumb extended downward, other fingers closed"
+  },
+  "SWIPE_RIGHT": {
+    "text": "GO",
+    "type": "word",
+    "description": "Move open hand from left to right"
+  },
+  "SWIPE_LEFT": {
+    "text": "COME",
+    "type": "word",
+    "description": "Move open hand from right to left toward body"
+  },
+  "WAVE": {
+    "text": "HELLO",
+    "type": "word",
+    "description": "Wave open hand side to side"
+  },
+  "PALM_UP": {
+    "text": "PLEASE",
+    "type": "word",
+    "description": "Open hand palm up, circular motion on chest"
+  },
+  "PALM_DOWN": {
+    "text": "STOP",
+    "type": "word",
+    "description": "Open hand palm down, push forward"
+  },
+  "FINGER_SPELL_C": {
+    "text": "C",
+    "type": "letter",
+    "description": "Curved hand forming C shape"
+  },
+  "FINGER_SPELL_E": {
+    "text": "E",
+    "type": "letter",
+    "description": "Fingers bent at middle joints, thumb touching side"
+  },
+  "FINGER_SPELL_G": {
+    "text": "G",
+    "type": "letter",
+    "description": "Index finger and thumb extended sideways"
+  },
+  "FINGER_SPELL_H": {
+    "text": "H",
+    "type": "letter",
+    "description": "Index and middle fingers extended sideways"
+  },
+  "FINGER_SPELL_I": {
+    "text": "I",
+    "type": "letter",
+    "description": "Pinky finger extended up"
+  },
+  "FINGER_SPELL_L": {
+    "text": "L",
+    "type": "letter",
+    "description": "Index finger up, thumb out, forming L"
+  },
+  "FINGER_SPELL_M": {
+    "text": "M",
+    "type": "letter",
+    "description": "Three fingers over thumb"
+  },
+  "FINGER_SPELL_N": {
+    "text": "N",
+    "type": "letter",
+    "description": "Two fingers over thumb"
+  },
+  "FINGER_SPELL_O": {
+    "text": "O",
+    "type": "letter",
+    "description": "Fingers and thumb forming O shape"
+  },
+  "FINGER_SPELL_P": {
+    "text": "P",
+    "type": "letter",
+    "description": "Like K but pointed down"
+  },
+  "FINGER_SPELL_Q": {
+    "text": "Q",
+    "type": "letter",
+    "description": "Like G but pointed down"
+  },
+  "FINGER_SPELL_R": {
+    "text": "R",
+    "type": "letter",
+    "description": "Index and middle fingers crossed"
+  },
+  "FINGER_SPELL_S": {
+    "text": "S",
+    "type": "letter",
+    "description": "Fist with thumb across fingers"
+  },
+  "FINGER_SPELL_T": {
+    "text": "T",
+    "type": "letter",
+    "description": "Thumb between index and middle finger"
+  },
+  "FINGER_SPELL_U": {
+    "text": "U",
+    "type": "letter",
+    "description": "Index and middle fingers together, pointing up"
+  },
+  "FINGER_SPELL_W": {
+    "text": "W",
+    "type": "letter",
+    "description": "Three fingers up and spread"
+  },
+  "FINGER_SPELL_X": {
+    "text": "X",
+    "type": "letter",
+    "description": "Index finger bent like hook"
+  },
+  "FINGER_SPELL_Y": {
+    "text": "Y",
+    "type": "letter",
+    "description": "Thumb and pinky extended"
+  },
+  "FINGER_SPELL_Z": {
+    "text": "Z",
+    "type": "letter",
+    "description": "Index finger draws Z in air"
+  },
+  "YES": {
+    "text": "YES",
+    "type": "word",
+    "description": "Fist nods up and down"
+  },
+  "NO": {
+    "text": "NO",
+    "type": "word",
+    "description": "Index and middle finger snap together with thumb"
+  },
+  "THANK_YOU": {
+    "text": "THANK YOU",
+    "type": "phrase",
+    "description": "Flat hand touches chin then moves forward"
+  },
+  "SORRY": {
+    "text": "SORRY",
+    "type": "word",
+    "description": "Fist circles on chest"
+  },
+  "HELP": {
+    "text": "HELP",
+    "type": "word",
+    "description": "Flat hand on fist, both move up"
+  },
+  "WANT": {
+    "text": "WANT",
+    "type": "word",
+    "description": "Open hands pull toward body"
+  },
+  "NEED": {
+    "text": "NEED",
+    "type": "word",
+    "description": "Index finger moves down firmly"
+  },
+  "LOVE": {
+    "text": "LOVE",
+    "type": "word",
+    "description": "Crossed fists on chest"
+  },
+  "FRIEND": {
+    "text": "FRIEND",
+    "type": "word",
+    "description": "Hooked index fingers twist"
+  },
+  "FAMILY": {
+    "text": "FAMILY",
+    "type": "word",
+    "description": "F handshapes circle around"
+  },
+  "HOME": {
+    "text": "HOME",
+    "type": "word",
+    "description": "Fingertips touch at mouth then cheek"
+  },
+  "WORK": {
+    "text": "WORK",
+    "type": "word",
+    "description": "Fists tap wrists together"
+  },
+  "SCHOOL": {
+    "text": "SCHOOL",
+    "type": "word",
+    "description": "Hands clap twice"
+  },
+  "EAT": {
+    "text": "EAT",
+    "type": "word",
+    "description": "Fingers to mouth"
+  },
+  "DRINK": {
+    "text": "DRINK",
+    "type": "word",
+    "description": "C hand to mouth like holding cup"
+  },
+  "HAPPY": {
+    "text": "HAPPY",
+    "type": "word",
+    "description": "Open hands brush up chest twice"
+  },
+  "SAD": {
+    "text": "SAD",
+    "type": "word",
+    "description": "Open hands move down face"
+  },
+  "ANGRY": {
+    "text": "ANGRY",
+    "type": "word",
+    "description": "Claw hands pull from face"
+  },
+  "AFRAID": {
+    "text": "AFRAID",
+    "type": "word",
+    "description": "Open hands shake in front of chest"
+  }
+}

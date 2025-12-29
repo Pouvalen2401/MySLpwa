@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#4F46E5">
+  <title>SignSpeak - Customize Avatar</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header-custom">
+    <div class="container-custom">
+      <div class="header-content">
+        <a href="home.html" class="logo">🤟 SignSpeak</a>
+        
+        <nav class="nav-custom">
+          <a href="home.html" class="nav-link-custom">Home</a>
+          <a href="translate.html" class="nav-link-custom">Translate</a>
+          <a href="avatar-customization.html" class="nav-link-custom active">Avatar</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container-custom" style="padding: 24px 20px;">
+    <div class="row g-4">
+      <!-- Avatar Preview -->
+      <div class="col-lg-6">
+        <div class="card-custom">
+          <h2 class="mb-3">Avatar Preview</h2>
+          
+          <div id="avatarPreview" class="avatar-preview">
+            <!-- Avatar SVG will be rendered here -->
+          </div>
+
+          <div class="mt-3 flex gap-2">
+            <button id="exportSvgBtn" class="btn-outline-custom flex-1">Export SVG</button>
+            <button id="exportPngBtn" class="btn-outline-custom flex-1">Export PNG</button>
+            <button id="resetBtn" class="btn-outline-custom">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Customization Options -->
+      <div class="col-lg-6">
+        <div class="card-custom">
+          <h2 class="mb-3">Customize</h2>
+
+          <!-- Body Type -->
+          <div class="customization-section mb-4">
+            <label class="form-label-custom">Body Type</label>
+            <div class="option-grid">
+              <button class="option-btn" data-type="bodyType" data-value="slim">Slim</button>
+              <button class="option-btn active" data-type="bodyType" data-value="default">Default</button>
+              <button class="option-btn" data-type="bodyType" data-value="athletic">Athletic</button>
+              <button class="option-btn" data-type="bodyType" data-value="plus">Plus</button>
+            </div>
+          </div>
+
+          <!-- Skin Color -->
+          <div class="customization-section mb-4">
+            <label class="form-label-custom">Skin Color</label>
+            <div class="color-grid">
+              <button class="color-btn" data-type="skinColor" data-value="#F4C2A0" style="background: #F4C2A0;"></button>
+              <button class="color-btn" data-type="skinColor" data-value="#E4A876" style="background: #E4A876;"></button>
+              <button class="color-btn" data-type="skinColor" data-value="#D1915E" style="background: #D1915E;"></button>
+              <button class="color-btn" data-type="skinColor" data-value="#B87850" style="background: #B87850;"></button>
+              <button class="color-btn" data-type="skinColor" data-value="#8B5A3C" style="background: #8B5A3C;"></button>
+              <button class="color-btn" data-type="skinColor" data-value="#5D3A1A" style="background: #5D3A1A;"></button>
+            </div>
+          </div>
+
+          <!-- Hair Style -->
+          <div class="customization-section mb-4">
+            <label class="form-label-custom">Hair Style</label>
+            <div class="option-grid">
+              <button class="option-btn active" data-type="hairStyle" data-value="short">Short</button>
+              <button class="option-btn" data-type="hairStyle" data-value="medium">Medium</button>
+              <button class="option-btn" data-type="hairStyle" data-value="long">Long</button>
+              <button class="option-btn" data-type="hairStyle" data-value="curly">Curly</button>
+              <button class="option-btn" data-type="hairStyle" data-value="bald">Bald</button>
+              <button class="option-btn" data-type="hairStyle" data-value="ponytail">Ponytail</button>
+            </div>
+          </div>
+
+          <!-- Hair Color -->
+          <div class="customization-section mb-4">
+            <label class="form-label-custom">Hair Color</label>
+            <div class="color-grid">
+              <button class="color-btn" data-type="hairColor" data-value="#2C1B18" style="background: #2C1B18;"></button>
+              <button class="color-btn" data-type="hairColor" data-value="#5C3317" style="background: #5C3317;"></button>
+              <button class="color-btn" data-type="hairColor" data-value="#8B4513" style="background: #8B4513;"></button>
+              <button class="color-btn" data-type="hairColor" data-value="#DAA520" style="background: #DAA520;"></button>
+              <button class="color-btn" data-type="hairColor" data-value="#FFD700" style="background: #FFD700;"></button>
+              <button class="color-btn" data-type="hairColor" data-value="#FF0000" style="background: #FF0000;"></button>
+            </div>
+          </div>
+
+          <!-- Outfit Type -->
+          <div class="customization-section mb-4">
+            <label class="form-label-custom">Outfit Type</label>
+            <div class="option-grid">
+              <button class="option-btn active" data-type="outfitType" data-value="casual">Casual</button>
+              <button class="option-btn" data-type="outfitType" data-value="formal">Formal</button>
+              <button class="option-btn" data-type="outfitType" data-value="sporty">Sporty</button>
+              <button class="option-btn" data-type="outfitType" data-value="traditional">Traditional</button>
+            </div>
+          </div>
+
+          <!-- Outfit Color -->
+          <div class="customization-section mb-4">
+            <label class="form-label-custom">Outfit Color</label>
+            <div class="color-grid">
+              <button class="color-btn" data-type="outfitColor" data-value="#4F46E5" style="background: #4F46E5;"></button>
+              <button class="color-btn" data-type="outfitColor" data-value="#10B981" style="background: #10B981;"></button>
+              <button class="color-btn" data-type="outfitColor" data-value="#EF4444" style="background: #EF4444;"></button>
+              <button class="color-btn" data-type="outfitColor" data-value="#F59E0B" style="background: #F59E0B;"></button>
+              <button class="color-btn" data-type="outfitColor" data-value="#8B5CF6" style="background: #8B5CF6;"></button>
+              <button class="color-btn" data-type="outfitColor" data-value="#EC4899" style="background: #EC4899;"></button>
+            </div>
+          </div>
+
+          <!-- Accessory -->
+          <div class="customization-section mb-4">
+            <label class="form-label-custom">Accessory</label>
+            <div class="option-grid">
+              <button class="option-btn active" data-type="accessory" data-value="none">None</button>
+              <button class="option-btn" data-type="accessory" data-value="glasses">Glasses</button>
+              <button class="option-btn" data-type="accessory" data-value="hat">Hat</button>
+              <button class="option-btn" data-type="accessory" data-value="earrings">Earrings</button>
+              <button class="option-btn" data-type="accessory" data-value="necklace">Necklace</button>
+            </div>
+          </div>
+
+          <!-- Save Button -->
+          <button id="saveAvatarBtn" class="btn-primary-custom w-100">Save Avatar</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/utils.js"></script>
+  <script src="../js/storage-manager.js"></script>
+  <script src="../js/avatar-manager.js"></script>
+
+  <script>
+    let currentUserId = null;
+
+    // Initialize
+    async function init() {
+      try {
+        currentUserId = Utils.getLocalStorage('currentUserId');
+        if (!currentUserId) {
+          window.location.href = '../index.html';
+          return;
+        }
+
+        await AvatarManager.init(currentUserId);
+        renderAvatar();
+        highlightCurrentOptions();
+
+      } catch (error) {
+        console.error('Initialization error:', error);
+        Utils.showToast('Failed to load avatar', 'error');
+      }
+    }
+
+    // Render avatar
+    function renderAvatar() {
+      const config = AvatarManager.getConfig();
+      AvatarManager.renderToElement(document.getElementById('avatarPreview'), config, 400);
+    }
+
+    // Highlight current options
+    function highlightCurrentOptions() {
+      const config = AvatarManager.getConfig();
+
+      // Remove all active classes
+      document.querySelectorAll('.option-btn, .color-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      // Add active class to current options
+      Object.entries(config).forEach(([key, value]) => {
+        const btn = document.querySelector(`[data-type="${key}"][data-value="${value}"]`);
+        if (btn) {
+          btn.classList.add('active');
+        }
+      });
+    }
+
+    // Option button click handler
+    document.querySelectorAll('.option-btn, .color-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const type = this.dataset.type;
+        const value = this.dataset.value;
+
+        try {
+          // Remove active class from siblings
+          this.parentElement.querySelectorAll('.option-btn, .color-btn').forEach(b => {
+            b.classList.remove('active');
+          });
+
+          // Add active class to clicked button
+          this.classList.add('active');
+
+          // Update avatar
+          await AvatarManager.updateProperty(type, value, currentUserId);
+          renderAvatar();
+
+        } catch (error) {
+          console.error('Update error:', error);
+          Utils.showToast('Failed to update avatar', 'error');
+        }
+      });
+    });
+
+    // Save avatar
+    document.getElementById('saveAvatarBtn').addEventListener('click', async () => {
+      try {
+        const config = AvatarManager.getConfig();
+        await AvatarManager.updateConfig(config, currentUserId);
+        Utils.showToast('Avatar saved successfully!', 'success');
+        Utils.vibrate(200);
+      } catch (error) {
+        console.error('Save error:', error);
+        Utils.showToast('Failed to save avatar', 'error');
+      }
+    });
+
+    // Export SVG
+    document.getElementById('exportSvgBtn').addEventListener('click', () => {
+      AvatarManager.exportAvatar('svg', 400);
+    });
+
+    // Export PNG
+    document.getElementById('exportPngBtn').addEventListener('click', () => {
+      AvatarManager.exportAvatar('png', 400);
+    });
+
+    // Reset avatar
+    document.getElementById('resetBtn').addEventListener('click', async () => {
+      if (confirm('Reset avatar to default?')) {
+        try {
+          await AvatarManager.resetToDefault(currentUserId);
+          renderAvatar();
+          highlightCurrentOptions();
+          Utils.showToast('Avatar reset', 'info');
+        } catch (error) {
+          console.error('Reset error:', error);
+          Utils.showToast('Failed to reset avatar', 'error');
+        }
+      }
+    });
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+
+  <style>
+    .avatar-preview {
+      width: 100%;
+      min-height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: var(--border-radius);
+      padding: 24px;
+    }
+
+    .customization-section {
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+    }
+
+    .option-btn {
+      padding: 12px;
+      border: 2px solid var(--border-light);
+      border-radius: var(--border-radius-sm);
+      background: var(--card-light);
+      color: var(--text-light);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .dark-mode .option-btn {
+      background: var(--card-dark);
+      border-color: var(--border-dark);
+      color: var(--text-dark);
+    }
+
+    .option-btn:hover {
+      border-color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    .option-btn.active {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+      gap: 8px;
+    }
+
+    .color-btn {
+      width: 100%;
+      height: 50px;
+      border: 3px solid transparent;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .color-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .color-btn.active {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px white, 0 0 0 4px var(--primary-color);
+    }
+  </style>
+</body>
+</html>
