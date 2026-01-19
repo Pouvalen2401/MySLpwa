@@ -7,6 +7,9 @@ const CameraHandler = {
   currentFacingMode: 'user',
   currentDeviceId: null,
   availableDevices: [],
+  faceDetectionCanvas: null,
+  faceDetectionInterval: null,
+  isFaceDetectionRunning: false,
 
   // Initialize camera
   async init(videoElement, options = {}) {
@@ -35,6 +38,10 @@ const CameraHandler = {
             .then(() => {
               console.log('Camera initialized successfully');
               console.log('Video dimensions:', this.videoElement.videoWidth, 'x', this.videoElement.videoHeight);
+              
+              // Start face detection after camera is ready
+              this.startFaceDetection();
+              
               resolve(this.stream);
             })
             .catch(reject);
@@ -44,11 +51,124 @@ const CameraHandler = {
           reject(new Error('Video element error'));
         };
       });
+
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('/models')
+      ])
     } catch (error) {
       console.error('Camera initialization failed:', error);
       this.handleCameraError(error);
       throw error;
     }
+  },
+
+  // Start face detection
+  async startFaceDetection() {
+    if (this.isFaceDetectionRunning || !this.videoElement) {
+      return;
+    }
+
+    try {
+      // Load face-api models
+      await Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+        faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('/models')
+      ]);
+
+      // Create canvas for face detection overlay
+      this.faceDetectionCanvas = faceapi.createCanvasFromMedia(this.videoElement);
+      this.faceDetectionCanvas.style.position = 'absolute';
+      this.faceDetectionCanvas.style.top = '0';
+      this.faceDetectionCanvas.style.left = '0';
+      
+      const videoContainer = this.videoElement.parentElement;
+      if (videoContainer) {
+        videoContainer.style.position = 'relative';
+        videoContainer.appendChild(this.faceDetectionCanvas);
+      }
+
+      const displaySize = { 
+        width: this.videoElement.width, 
+        height: this.videoElement.height 
+      };
+      faceapi.matchDimensions(this.faceDetectionCanvas, displaySize);
+
+      this.isFaceDetectionRunning = true;
+      console.log('Face detection started');
+
+      video.addEventListener('play', () => {
+  const canvas = faceapi.createCanvasFromMedia(video)
+  document.body.append(canvas)
+  const displaySize = { width: video.width, height: video.height }
+  faceapi.matchDimensions(canvas, displaySize)
+  setInterval(async () => {
+    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions()
+    const resizedDetections = faceapi.resizeResults(detections, displaySize)
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+    faceapi.draw.drawDetections(canvas, resizedDetections)
+    faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+    faceapi.draw.drawFaceExpressions(canvas, resizedDetections)
+  }, 100)
+})
+
+      // Run detection loop
+      this.faceDetectionInterval = setInterval(async () => {
+        if (!this.isFaceDetectionRunning || !this.videoElement) {
+          return;
+        }
+
+        try {
+          const detections = await faceapi
+            .detectAllFaces(this.videoElement, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks()
+            .withFaceExpressions();
+
+          const resizedDetections = faceapi.resizeResults(detections, displaySize);
+          
+          // Clear and redraw
+          this.faceDetectionCanvas.getContext('2d').clearRect(
+            0, 0, 
+            this.faceDetectionCanvas.width, 
+            this.faceDetectionCanvas.height
+          );
+          
+          faceapi.draw.drawDetections(this.faceDetectionCanvas, resizedDetections);
+          faceapi.draw.drawFaceLandmarks(this.faceDetectionCanvas, resizedDetections);
+          faceapi.draw.drawFaceExpressions(this.faceDetectionCanvas, resizedDetections);
+
+          // Dispatch custom event with face detection results
+          window.dispatchEvent(new CustomEvent('facedetectionresults', {
+            detail: { detections, resizedDetections }
+          }));
+        } catch (error) {
+          console.error('Face detection error:', error);
+        }
+      }, 100);
+
+    } catch (error) {
+      console.error('Face detection initialization failed:', error);
+    }
+  },
+
+  // Stop face detection
+  stopFaceDetection() {
+    if (this.faceDetectionInterval) {
+      clearInterval(this.faceDetectionInterval);
+      this.faceDetectionInterval = null;
+    }
+
+    if (this.faceDetectionCanvas) {
+      this.faceDetectionCanvas.remove();
+      this.faceDetectionCanvas = null;
+    }
+
+    this.isFaceDetectionRunning = false;
+    console.log('Face detection stopped');
   },
 
   // Start camera with settings
@@ -75,8 +195,11 @@ const CameraHandler = {
     }
   },
 
+
   // Stop camera
   stop() {
+    this.stopFaceDetection();
+    
     if (this.stream) {
       this.stream.getTracks().forEach(track => {
         track.stop();
@@ -558,6 +681,7 @@ const CameraHandler = {
   // Clean up
   cleanup() {
     console.log('Cleaning up camera handler...');
+    this.stopFaceDetection();
     this.stop();
     this.videoElement = null;
     this.currentFacingMode = 'user';

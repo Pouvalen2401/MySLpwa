@@ -250,16 +250,70 @@
       const video = document.getElementById('videoElement');
       const canvas = document.getElementById('overlayCanvas');
       
-      // Initialize detection
+      // Initialize hand detection
       await HandDetection.init(video, canvas, onHandResults);
-      await FaceDetection.init(video, onFaceResults);
       
+      // Initialize face detection with proper callback
+      await FaceDetection.init(video, canvas, onFaceResults);
+      
+      // Start both detections
       await HandDetection.start();
+      await FaceDetection.start();
       
-      // Process face detection
+      // Process frames continuously
       detectionInterval = setInterval(async () => {
-        await FaceDetection.processFrame(video);
-      }, 100);
+        if (isDetecting) {
+          // Process hand detection
+          // (HandDetection handles its own loop)
+          
+          // Process face detection
+          await FaceDetection.processFrame(video);
+        }
+      }, 30); // 30ms = ~33fps
+    }
+
+    // Face detection results
+    function onFaceResults(results) {
+      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+        // Get facial landmarks
+        const landmarks = results.multiFaceLandmarks[0];
+        
+        // Detect mood based on face geometry
+        const mood = detectMoodFromFace(landmarks);
+        
+        // Update mood display
+        document.getElementById('moodEmoji').textContent = mood.emoji;
+        document.getElementById('moodText').textContent = mood.text;
+      }
+    }
+
+    // Detect mood from facial landmarks
+    function detectMoodFromFace(landmarks) {
+      const moodMap = {
+        'happy': { emoji: '😊', text: 'Happy' },
+        'sad': { emoji: '😢', text: 'Sad' },
+        'angry': { emoji: '😠', text: 'Angry' },
+        'surprised': { emoji: '😲', text: 'Surprised' },
+        'neutral': { emoji: '😐', text: 'Neutral' }
+      };
+
+      // Analyze mouth landmarks (indices 78, 81, 13, 14)
+      const mouthOpen = Math.abs(landmarks[13].y - landmarks[14].y) > 0.03;
+      
+      // Analyze eyebrow landmarks (indices 105, 107, 336, 334)
+      const leftBrowRaised = landmarks[105].y < landmarks[107].y;
+      const rightBrowRaised = landmarks[336].y < landmarks[334].y;
+      
+      // Simple mood detection logic
+      if (mouthOpen && (leftBrowRaised || rightBrowRaised)) {
+        return moodMap['surprised'];
+      } else if (mouthOpen) {
+        return moodMap['happy'];
+      } else if (!mouthOpen && (leftBrowRaised || rightBrowRaised)) {
+        return moodMap['angry'];
+      }
+      
+      return moodMap['neutral'];
     }
 
     // Stop detection
@@ -270,6 +324,7 @@
         detectionInterval = null;
       }
       HandDetection.stop();
+      FaceDetection.stop();
     }
 
     // Hand detection results
@@ -302,17 +357,44 @@
       }
     }
 
-    // Face detection results
-    function onFaceResults(results) {
-      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-        // Detect mood
-        const mood = MoodDetection.detectMood(results.multiFaceLandmarks);
+    // Face detection results handler
+    window.addEventListener('facedetectionresults', (event) => {
+      const { detections, resizedDetections } = event.detail;
+      
+      if (detections && detections.length > 0) {
+        // Process face detection results
+        const detection = detections[0];
         
-        // Update mood display
-        document.getElementById('moodEmoji').textContent = MoodDetection.getMoodEmoji(mood.mood);
-        document.getElementById('moodText').textContent = mood.mood.charAt(0).toUpperCase() + mood.mood.slice(1);
+        // Update mood based on face expressions
+        if (detection.expressions) {
+          const expressions = detection.expressions;
+          let dominantExpression = 'neutral';
+          let maxConfidence = 0;
+
+          for (const [expression, confidence] of Object.entries(expressions)) {
+            if (confidence > maxConfidence) {
+              maxConfidence = confidence;
+              dominantExpression = expression;
+            }
+          }
+
+          // Map expressions to moods
+          const moodMap = {
+            'happy': { emoji: '😊', text: 'Happy' },
+            'sad': { emoji: '😢', text: 'Sad' },
+            'angry': { emoji: '😠', text: 'Angry' },
+            'disgusted': { emoji: '🤢', text: 'Disgusted' },
+            'fearful': { emoji: '😨', text: 'Fearful' },
+            'surprised': { emoji: '😲', text: 'Surprised' },
+            'neutral': { emoji: '😐', text: 'Neutral' }
+          };
+
+          const mood = moodMap[dominantExpression] || moodMap['neutral'];
+          document.getElementById('moodEmoji').textContent = mood.emoji;
+          document.getElementById('moodText').textContent = mood.text;
+        }
       }
-    }
+    });
 
     // Clear translation
     document.getElementById('clearBtn').addEventListener('click', () => {
@@ -394,6 +476,7 @@
     // Cleanup on unload
     window.addEventListener('beforeunload', () => {
       stopDetection();
+      FaceDetection.cleanup();
       CameraHandler.cleanup();
     });
   </script>

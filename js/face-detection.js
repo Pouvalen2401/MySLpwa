@@ -6,10 +6,20 @@ const FaceDetection = {
   currentFaceLandmarks: null,
   faceDetectionCallback: null,
   processingFrame: false,
+  videoElement: null,
+  canvasElement: null,
+  canvasCtx: null,
+  callback: null,
+  isRunning: false,
 
   // Initialize MediaPipe Face Mesh
-  async init(videoElement, onResultsCallback) {
+  async init(videoElement, canvasElement, onResultsCallback) {
     try {
+      this.videoElement = videoElement;
+      this.canvasElement = canvasElement;
+      this.canvasCtx = canvasElement.getContext('2d');
+      this.callback = onResultsCallback;
+
       // Check if MediaPipe FaceMesh is available
       if (typeof FaceMesh === 'undefined') {
         console.error('MediaPipe FaceMesh not loaded. Please include the script.');
@@ -32,8 +42,11 @@ const FaceDetection = {
       });
 
       // Set results callback
-      this.faceDetectionCallback = onResultsCallback || this.defaultOnResults.bind(this);
-      this.faceMesh.onResults(this.faceDetectionCallback);
+      this.faceMesh.onResults(this.onFaceMeshResults.bind(this));
+
+      // Set canvas dimensions to match video
+      this.canvasElement.width = this.videoElement.videoWidth;
+      this.canvasElement.height = this.videoElement.videoHeight;
 
       this.isInitialized = true;
       console.log('Face detection initialized successfully');
@@ -48,23 +61,162 @@ const FaceDetection = {
 
   // Process video frame
   async processFrame(videoElement) {
-    if (!this.isInitialized || !this.faceMesh) {
-      console.warn('Face detection not initialized');
+    if (!this.isInitialized || !this.isRunning) {
       return;
     }
 
-    if (this.processingFrame) {
-      return; // Skip if already processing
-    }
-
     try {
-      this.processingFrame = true;
       await this.faceMesh.send({ image: videoElement });
     } catch (error) {
       console.error('Face detection processing error:', error);
-    } finally {
-      this.processingFrame = false;
     }
+  },
+
+  // Handle Face Mesh results
+  onFaceMeshResults(results) {
+    this.currentFaceLandmarks = results.multiFaceLandmarks;
+
+    // Clear canvas
+    this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+
+    // Draw video frame
+    this.canvasCtx.drawImage(
+      this.videoElement,
+      0,
+      0,
+      this.canvasElement.width,
+      this.canvasElement.height
+    );
+
+    // Draw face mesh landmarks
+    if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+      for (let landmarks of results.multiFaceLandmarks) {
+        this.drawFaceMesh(landmarks);
+      }
+    }
+
+    // Call user callback
+    if (this.callback) {
+      this.callback(results);
+    }
+
+    // Dispatch custom event for other modules
+    window.dispatchEvent(new CustomEvent('facemeshresults', {
+      detail: results
+    }));
+  },
+
+  // Draw face mesh on canvas
+  drawFaceMesh(landmarks) {
+    const drawingUtils = window.drawingUtils;
+    const canvasSize = {
+      width: this.canvasElement.width,
+      height: this.canvasElement.height
+    };
+
+    // Draw connections (mesh lines)
+    this.drawConnections(landmarks, canvasSize);
+
+    // Draw landmarks (points)
+    this.drawLandmarks(landmarks, canvasSize);
+  },
+
+  // Draw mesh connections
+  drawConnections(landmarks, canvasSize) {
+    this.canvasCtx.strokeStyle = 'rgba(79, 70, 229, 0.3)';
+    this.canvasCtx.lineWidth = 1;
+    this.canvasCtx.fillStyle = 'rgba(79, 70, 229, 0.1)';
+
+    // Face outline
+    const faceLandmarkIndexes = [
+      [10, 338], [338, 297], [297, 332], [332, 284], [284, 251], [251, 389],
+      [389, 356], [356, 454], [454, 323], [323, 361], [361, 288], [288, 397],
+      [397, 365], [365, 379], [379, 378], [378, 400], [400, 377], [377, 152],
+      [152, 148], [148, 176], [176, 149], [149, 150], [150, 136], [136, 172],
+      [172, 58], [58, 132], [132, 93], [93, 234], [234, 127], [127, 162],
+      [162, 21], [21, 54], [54, 103], [103, 67], [67, 109], [109, 10]
+    ];
+
+    // Draw face outline
+    for (let connection of faceLandmarkIndexes) {
+      const [start, end] = connection;
+      const startLandmark = landmarks[start];
+      const endLandmark = landmarks[end];
+
+      const startX = startLandmark.x * canvasSize.width;
+      const startY = startLandmark.y * canvasSize.height;
+      const endX = endLandmark.x * canvasSize.width;
+      const endY = endLandmark.y * canvasSize.height;
+
+      this.canvasCtx.beginPath();
+      this.canvasCtx.moveTo(startX, startY);
+      this.canvasCtx.lineTo(endX, endY);
+      this.canvasCtx.stroke();
+    }
+
+    // Draw eyes connections
+    const eyeIndexes = [
+      [33, 7], [7, 163], [163, 144], [144, 145], [145, 153], [153, 154],
+      [154, 155], [155, 133], [33, 133],
+      [263, 249], [249, 390], [390, 373], [373, 374], [374, 380], [380, 381],
+      [381, 382], [382, 362], [263, 362]
+    ];
+
+    for (let connection of eyeIndexes) {
+      const [start, end] = connection;
+      const startLandmark = landmarks[start];
+      const endLandmark = landmarks[end];
+
+      const startX = startLandmark.x * canvasSize.width;
+      const startY = startLandmark.y * canvasSize.height;
+      const endX = endLandmark.x * canvasSize.width;
+      const endY = endLandmark.y * canvasSize.height;
+
+      this.canvasCtx.beginPath();
+      this.canvasCtx.moveTo(startX, startY);
+      this.canvasCtx.lineTo(endX, endY);
+      this.canvasCtx.strokeStyle = 'rgba(34, 197, 94, 0.5)';
+      this.canvasCtx.stroke();
+    }
+  },
+
+  // Draw landmark points
+  drawLandmarks(landmarks, canvasSize) {
+    // Draw all key landmarks
+    const keyLandmarkIndexes = [10, 21, 54, 103, 67, 109, 151, 337, 299, 333, 298, 301, 292, 0, 17, 84, 181, 91, 106, 203, 36, 122, 26, 190, 244, 93, 234, 127, 162, 21, 54, 103, 67, 109];
+    
+    this.canvasCtx.fillStyle = 'rgba(79, 70, 229, 0.8)';
+    
+    for (let index of keyLandmarkIndexes) {
+      if (landmarks[index]) {
+        const landmark = landmarks[index];
+        const x = landmark.x * canvasSize.width;
+        const y = landmark.y * canvasSize.height;
+
+        // Draw point
+        this.canvasCtx.beginPath();
+        this.canvasCtx.arc(x, y, 3, 0, 2 * Math.PI);
+        this.canvasCtx.fill();
+      }
+    }
+  },
+
+  // Start detection loop
+  async start() {
+    if (!this.isInitialized) {
+      console.warn('Face Mesh not initialized');
+      return false;
+    }
+
+    this.isRunning = true;
+    console.log('Face detection started');
+    return true;
+  },
+
+  // Stop detection
+  stop() {
+    this.isRunning = false;
+    console.log('Face detection stopped');
   },
 
   // Default results handler
