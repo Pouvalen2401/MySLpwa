@@ -369,6 +369,13 @@ input:checked + .toggle-slider:before {
   bottom: 0;
   pointer-events: none;
 }
+.face-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
 
 .video-overlay canvas {
   width: 100%;

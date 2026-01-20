@@ -1,484 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#4F46E5">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4F46E5" />
   <title>SignSpeak - Translate</title>
-  
+
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Main Styles -->
   <link rel="stylesheet" href="../css/main.css">
-  
-  <!-- MediaPipe -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
-  <!-- Header -->
-  <header class="header-custom">
-    <div class="container-custom">
-      <div class="header-content">
-        <a href="home.html" class="logo">🤟 SignSpeak</a>
-        
-        <nav class="nav-custom">
-          <a href="home.html" class="nav-link-custom">Home</a>
-          <a href="translate.html" class="nav-link-custom active">Translate</a>
-          <a href="settings.html" class="nav-link-custom">Settings</a>
-        </nav>
-      </div>
-    </div>
-  </header>
 
-  <!-- Main Content -->
-  <main class="container-custom" style="padding: 24px 20px;">
-    <!-- Mode Toggle -->
-    <div class="card-custom mb-3">
-      <div class="flex justify-between align-center">
-        <h2 id="modeTitle">Sign to Text</h2>
-        <button id="switchModeBtn" class="btn-primary-custom">Switch Mode</button>
-      </div>
-    </div>
+<!-- Header -->
+<header class="header-custom">
+  <div class="container-custom">
+    <div class="header-content">
+      <a href="home.html" class="logo">🤟 SignSpeak</a>
 
-    <!-- Sign to Text Mode -->
-    <div id="signToTextMode" style="display: none;">
-      <div class="row g-3">
-        <!-- Video Feed -->
-        <div class="col-lg-8">
-          <div class="card-custom">
-            <div class="video-container" style="position: relative;">
-              <video id="videoElement" autoplay playsinline style="width: 100%; border-radius: 12px;"></video>
-              <canvas id="overlayCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
-            </div>
-            
-            <div class="mt-3 flex justify-between align-center">
-              <button id="startCameraBtn" class="btn-primary-custom">Start Camera</button>
-              <button id="switchCameraBtn" class="btn-outline-custom">Switch Camera</button>
-            </div>
+      <nav class="nav-custom">
+        <a href="home.html" class="nav-link-custom">Home</a>
+        <a href="translate.html" class="nav-link-custom active">Translate</a>
+        <a href="settings.html" class="nav-link-custom">Settings</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container-custom" style="padding: 24px 20px;">
+
+  <!-- Mode Toggle -->
+  <div class="card-custom mb-3">
+    <div class="flex justify-between align-center">
+      <h2 id="modeTitle">Sign to Text</h2>
+      <button id="switchModeBtn" class="btn-primary-custom">Switch Mode</button>
+    </div>
+  </div>
+
+  <!-- ================= SIGN TO TEXT ================= -->
+  <div id="signToTextMode">
+
+    <div class="row g-3">
+
+      <!-- Video Feed -->
+      <div class="col-lg-8">
+        <div class="card-custom">
+          <div class="video-container" style="position: relative;">
+            <video
+              id="videoElement"
+              autoplay
+              muted
+              playsinline
+              style="width: 100%; border-radius: 12px;">
+            </video>
           </div>
-        </div>
 
-        <!-- Output Panel -->
-        <div class="col-lg-4">
-          <div class="card-custom">
-            <h3 class="mb-2">Detected Signs</h3>
-            
-            <!-- Mood Indicator -->
-            <div class="mb-3 p-2" style="background: var(--bg-light); border-radius: 8px;">
-              <div class="text-muted mb-1" style="font-size: 12px;">Current Mood</div>
-              <div class="flex align-center gap-2">
-                <span id="moodEmoji" style="font-size: 24px;">😐</span>
-                <span id="moodText">Neutral</span>
-              </div>
-            </div>
-
-            <!-- Translation Output -->
-            <div class="mb-3">
-              <textarea id="translationOutput" 
-                        class="form-control-custom" 
-                        rows="8" 
-                        readonly 
-                        placeholder="Your signs will appear here..."></textarea>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex gap-2">
-              <button id="clearBtn" class="btn-outline-custom flex-1">Clear</button>
-              <button id="speakBtn" class="btn-primary-custom flex-1">🔊 Speak</button>
-              <button id="copyBtn" class="btn-outline-custom">📋</button>
-            </div>
-
-            <!-- Current Gesture Info -->
-            <div id="gestureInfo" class="mt-3 p-2" style="background: var(--bg-light); border-radius: 8px; display: none;">
-              <div class="text-muted mb-1" style="font-size: 12px;">Current Gesture</div>
-              <div id="currentGesture" style="font-weight: 600;">-</div>
-            </div>
+          <div class="mt-3 flex justify-between align-center">
+            <button id="startCameraBtn" class="btn-primary-custom">Start Camera</button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Text to Sign Mode -->
-    <div id="textToSignMode" style="display: none;">
-      <div class="row g-3">
-        <!-- Input Panel -->
-        <div class="col-lg-4">
-          <div class="card-custom">
-            <h3 class="mb-3">Enter Text</h3>
-            
-            <textarea id="textInput" 
-                      class="form-control-custom" 
-                      rows="6" 
-                      placeholder="Type text to see sign language..."></textarea>
-            
-            <button id="translateTextBtn" class="btn-primary-custom w-100 mt-3">Translate</button>
-            
-            <!-- Sign Sequence -->
-            <div id="signSequence" class="mt-3" style="max-height: 300px; overflow-y: auto;">
-              <!-- Sign instructions will appear here -->
+      <!-- Output Panel -->
+      <div class="col-lg-4">
+        <div class="card-custom">
+          <h3 class="mb-2">Detected Signs</h3>
+
+          <!-- Mood Indicator -->
+          <div class="mb-3 p-2" style="background: var(--bg-light); border-radius: 8px;">
+            <div class="text-muted mb-1" style="font-size: 12px;">Current Mood</div>
+            <div class="flex align-center gap-2">
+              <span id="moodEmoji" style="font-size: 24px;">😐</span>
+              <span id="moodText">Neutral</span>
             </div>
           </div>
+
+          <!-- Translation Output -->
+          <textarea
+            id="translationOutput"
+            class="form-control-custom"
+            rows="8"
+            readonly
+            placeholder="Your signs will appear here...">
+          </textarea>
+
+          <!-- Actions -->
+          <div class="flex gap-2 mt-3">
+            <button id="clearBtn" class="btn-outline-custom flex-1">Clear</button>
+            <button id="speakBtn" class="btn-primary-custom flex-1">🔊 Speak</button>
+            <button id="copyBtn" class="btn-outline-custom">📋</button>
+          </div>
+
         </div>
+      </div>
 
-        <!-- Avatar Display -->
-        <div class="col-lg-8">
-          <div class="card-custom text-center">
-            <h3 class="mb-3">Avatar Demonstration</h3>
-            
-            <div id="avatarDisplay" style="min-height: 400px; display: flex; align-items: center; justify-content: center;">
-              <!-- Avatar SVG will be rendered here -->
-            </div>
+    </div>
+  </div>
 
-            <div class="mt-3 flex gap-2 justify-center">
-              <button id="playAnimationBtn" class="btn-primary-custom">▶️ Play</button>
-              <button id="pauseAnimationBtn" class="btn-outline-custom">⏸️ Pause</button>
-              <button id="repeatAnimationBtn" class="btn-outline-custom">🔄 Repeat</button>
-            </div>
+  <!-- ================= TEXT TO SIGN ================= -->
+  <div id="textToSignMode" style="display:none;">
+
+    <div class="row g-3">
+
+      <div class="col-lg-4">
+        <div class="card-custom">
+          <h3 class="mb-3">Enter Text</h3>
+
+          <textarea
+            id="textInput"
+            class="form-control-custom"
+            rows="6"
+            placeholder="Type text to see sign language...">
+          </textarea>
+
+          <button id="translateTextBtn" class="btn-primary-custom w-100 mt-3">
+            Translate
+          </button>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="card-custom text-center">
+          <h3 class="mb-3">Avatar Demonstration</h3>
+
+          <div id="avatarDisplay"
+               style="min-height: 400px; display:flex; align-items:center; justify-content:center;">
+          </div>
+
+          <div class="mt-3 flex gap-2 justify-center">
+            <button id="playAnimationBtn" class="btn-primary-custom">▶️ Play</button>
+            <button id="pauseAnimationBtn" class="btn-outline-custom">⏸️ Pause</button>
+            <button id="repeatAnimationBtn" class="btn-outline-custom">🔄 Repeat</button>
           </div>
         </div>
       </div>
+
     </div>
-  </main>
+  </div>
 
-  <!-- Scripts -->
-  <script src="../js/utils.js"></script>
-  <script src="../js/storage-manager.js"></script>
-  <script src="../js/settings-manager.js"></script>
-  <script src="../js/camera-handler.js"></script>
-  <script src="../js/hand-detection.js"></script>
-  <script src="../js/face-detection.js"></script>
-  <script src="../js/mood-detection.js"></script>
-  <script src="../js/translation-engine.js"></script>
-  <script src="../js/avatar-manager.js"></script>
-  <script src="../js/avatar-animator.js"></script>
+</main>
 
-  <script>
-    let currentUserId = null;
-    let currentMode = 'sign-to-text';
-    let isDetecting = false;
-    let detectionInterval = null;
+<!-- ================= SCRIPTS ================= -->
 
-    // Initialize
-    async function init() {
-      try {
-        currentUserId = Utils.getLocalStorage('currentUserId');
-        if (!currentUserId) {
-          window.location.href = '../index.html';
-          return;
-        }
+<script src="../js/utils.js"></script>
+<script src="../js/storage-manager.js"></script>
+<script src="../js/settings-manager.js"></script>
 
-        // Get mode from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        currentMode = urlParams.get('mode') || 'sign-to-text';
+<!-- Face API -->
+<script defer src="../js/face-api.min.js"></script>
 
-        // Initialize components
-        await SettingsManager.init(currentUserId);
-        await TranslationEngine.init();
-        await AvatarManager.init(currentUserId);
+<!-- Camera Handler -->
+<script defer src="../js/camera-handler.js"></script>
 
-        // Show appropriate mode
-        showMode(currentMode);
+<script src="../js/avatar-manager.js"></script>
+<script src="../js/avatar-animator.js"></script>
 
-      } catch (error) {
-        console.error('Initialization error:', error);
-        Utils.showToast('Failed to initialize', 'error');
-      }
+<script>
+  let currentUserId = null;
+  let currentMode = 'sign-to-text';
+  let cameraHandler = null;
+
+  async function init() {
+    currentUserId = Utils.getLocalStorage('currentUserId');
+    if (!currentUserId) {
+      window.location.href = '../index.html';
+      return;
     }
 
-    // Show mode
-    function showMode(mode) {
-      currentMode = mode;
+    await SettingsManager.init(currentUserId);
+    showMode(currentMode);
+  }
 
-      if (mode === 'sign-to-text') {
-        document.getElementById('signToTextMode').style.display = 'block';
-        document.getElementById('textToSignMode').style.display = 'none';
-        document.getElementById('modeTitle').textContent = 'Sign to Text';
-      } else {
-        document.getElementById('signToTextMode').style.display = 'none';
-        document.getElementById('textToSignMode').style.display = 'block';
-        document.getElementById('modeTitle').textContent = 'Text to Sign';
-        
-        // Render avatar
-        AvatarManager.renderToElement(document.getElementById('avatarDisplay'));
-        AvatarAnimator.init('avatarDisplay');
-      }
+  function showMode(mode) {
+    currentMode = mode;
+
+    document.getElementById('signToTextMode').style.display =
+      mode === 'sign-to-text' ? 'block' : 'none';
+
+    document.getElementById('textToSignMode').style.display =
+      mode === 'text-to-sign' ? 'block' : 'none';
+
+    document.getElementById('modeTitle').textContent =
+      mode === 'sign-to-text' ? 'Sign to Text' : 'Text to Sign';
+
+    if (mode === 'text-to-sign') {
+      AvatarManager.renderToElement(document.getElementById('avatarDisplay'));
+      AvatarAnimator.init('avatarDisplay');
     }
+  }
 
-    // Switch mode
-    document.getElementById('switchModeBtn').addEventListener('click', () => {
-      const newMode = currentMode === 'sign-to-text' ? 'text-to-sign' : 'sign-to-text';
-      showMode(newMode);
-      
-      if (currentMode === 'sign-to-text') {
-        stopDetection();
-      }
-    });
+  document.getElementById('switchModeBtn').addEventListener('click', () => {
+    showMode(currentMode === 'sign-to-text' ? 'text-to-sign' : 'sign-to-text');
+  });
 
-    // Start camera
-    document.getElementById('startCameraBtn').addEventListener('click', async () => {
-      try {
+  document.getElementById('startCameraBtn').addEventListener('click', async () => {
+    try {
+      if (!cameraHandler) {
         const video = document.getElementById('videoElement');
-        await CameraHandler.start(video, currentUserId);
-        
-        // Start detection
-        await startDetection();
-        
-        document.getElementById('startCameraBtn').textContent = 'Stop Camera';
-        document.getElementById('startCameraBtn').onclick = stopCamera;
-        
-        Utils.showToast('Camera started', 'success');
-      } catch (error) {
-        console.error('Camera start error:', error);
-        Utils.showToast('Failed to start camera', 'error');
-      }
-    });
+        cameraHandler = new CameraHandler(video);
 
-    // Stop camera
-    function stopCamera() {
-      CameraHandler.stop();
-      stopDetection();
-      document.getElementById('startCameraBtn').textContent = 'Start Camera';
-      document.getElementById('startCameraBtn').onclick = () => {
-        document.getElementById('startCameraBtn').click();
-      };
-    }
-
-    // Start detection
-    async function startDetection() {
-      isDetecting = true;
-      const video = document.getElementById('videoElement');
-      const canvas = document.getElementById('overlayCanvas');
-      
-      // Initialize hand detection
-      await HandDetection.init(video, canvas, onHandResults);
-      
-      // Initialize face detection with proper callback
-      await FaceDetection.init(video, canvas, onFaceResults);
-      
-      // Start both detections
-      await HandDetection.start();
-      await FaceDetection.start();
-      
-      // Process frames continuously
-      detectionInterval = setInterval(async () => {
-        if (isDetecting) {
-          // Process hand detection
-          // (HandDetection handles its own loop)
-          
-          // Process face detection
-          await FaceDetection.processFrame(video);
-        }
-      }, 30); // 30ms = ~33fps
-    }
-
-    // Face detection results
-    function onFaceResults(results) {
-      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
-        // Get facial landmarks
-        const landmarks = results.multiFaceLandmarks[0];
-        
-        // Detect mood based on face geometry
-        const mood = detectMoodFromFace(landmarks);
-        
-        // Update mood display
-        document.getElementById('moodEmoji').textContent = mood.emoji;
-        document.getElementById('moodText').textContent = mood.text;
-      }
-    }
-
-    // Detect mood from facial landmarks
-    function detectMoodFromFace(landmarks) {
-      const moodMap = {
-        'happy': { emoji: '😊', text: 'Happy' },
-        'sad': { emoji: '😢', text: 'Sad' },
-        'angry': { emoji: '😠', text: 'Angry' },
-        'surprised': { emoji: '😲', text: 'Surprised' },
-        'neutral': { emoji: '😐', text: 'Neutral' }
-      };
-
-      // Analyze mouth landmarks (indices 78, 81, 13, 14)
-      const mouthOpen = Math.abs(landmarks[13].y - landmarks[14].y) > 0.03;
-      
-      // Analyze eyebrow landmarks (indices 105, 107, 336, 334)
-      const leftBrowRaised = landmarks[105].y < landmarks[107].y;
-      const rightBrowRaised = landmarks[336].y < landmarks[334].y;
-      
-      // Simple mood detection logic
-      if (mouthOpen && (leftBrowRaised || rightBrowRaised)) {
-        return moodMap['surprised'];
-      } else if (mouthOpen) {
-        return moodMap['happy'];
-      } else if (!mouthOpen && (leftBrowRaised || rightBrowRaised)) {
-        return moodMap['angry'];
-      }
-      
-      return moodMap['neutral'];
-    }
-
-    // Stop detection
-    function stopDetection() {
-      isDetecting = false;
-      if (detectionInterval) {
-        clearInterval(detectionInterval);
-        detectionInterval = null;
-      }
-      HandDetection.stop();
-      FaceDetection.stop();
-    }
-
-    // Hand detection results
-    function onHandResults(results) {
-      const canvas = document.getElementById('overlayCanvas');
-      
-      // Draw landmarks if enabled
-      if (SettingsManager.shouldShowLandmarks()) {
-        HandDetection.drawLandmarks(canvas, results.multiHandLandmarks, results.multiHandedness);
-      }
-
-      // Get latest gesture
-      const gesture = HandDetection.getLatestGesture();
-      
-      if (gesture) {
-        // Get current mood
-        const mood = MoodDetection.getCurrentMood();
-        
-        // Translate gesture
-        const result = TranslationEngine.processRealTimeGesture(gesture, mood.mood);
-        
-        if (result) {
-          // Update output
-          document.getElementById('translationOutput').value = result.sentence;
-          
-          // Show current gesture
-          document.getElementById('gestureInfo').style.display = 'block';
-          document.getElementById('currentGesture').textContent = result.current.text;
-        }
-      }
-    }
-
-    // Face detection results handler
-    window.addEventListener('facedetectionresults', (event) => {
-      const { detections, resizedDetections } = event.detail;
-      
-      if (detections && detections.length > 0) {
-        // Process face detection results
-        const detection = detections[0];
-        
-        // Update mood based on face expressions
-        if (detection.expressions) {
-          const expressions = detection.expressions;
-          let dominantExpression = 'neutral';
-          let maxConfidence = 0;
-
-          for (const [expression, confidence] of Object.entries(expressions)) {
-            if (confidence > maxConfidence) {
-              maxConfidence = confidence;
-              dominantExpression = expression;
-            }
-          }
-
-          // Map expressions to moods
+        cameraHandler.onMoodDetected = (mood) => {
           const moodMap = {
-            'happy': { emoji: '😊', text: 'Happy' },
-            'sad': { emoji: '😢', text: 'Sad' },
-            'angry': { emoji: '😠', text: 'Angry' },
-            'disgusted': { emoji: '🤢', text: 'Disgusted' },
-            'fearful': { emoji: '😨', text: 'Fearful' },
-            'surprised': { emoji: '😲', text: 'Surprised' },
-            'neutral': { emoji: '😐', text: 'Neutral' }
+            happy: ['😊', 'Happy'],
+            sad: ['😢', 'Sad'],
+            angry: ['😠', 'Angry'],
+            surprised: ['😲', 'Surprised'],
+            neutral: ['😐', 'Neutral']
           };
 
-          const mood = moodMap[dominantExpression] || moodMap['neutral'];
-          document.getElementById('moodEmoji').textContent = mood.emoji;
-          document.getElementById('moodText').textContent = mood.text;
-        }
-      }
-    });
-
-    // Clear translation
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      document.getElementById('translationOutput').value = '';
-      TranslationEngine.clearBuffer();
-    });
-
-    // Speak translation
-    document.getElementById('speakBtn').addEventListener('click', () => {
-      const text = document.getElementById('translationOutput').value;
-      if (text) {
-        TranslationEngine.speakText(text);
-      }
-    });
-
-    // Copy translation
-    document.getElementById('copyBtn').addEventListener('click', () => {
-      const text = document.getElementById('translationOutput').value;
-      if (text) {
-        Utils.copyToClipboard(text);
-      }
-    });
-
-    // Switch camera
-    document.getElementById('switchCameraBtn').addEventListener('click', () => {
-      CameraHandler.switchCamera();
-    });
-
-    // Text to sign translation
-    document.getElementById('translateTextBtn').addEventListener('click', () => {
-      const text = document.getElementById('textInput').value.trim();
-      
-      if (!text) {
-        Utils.showToast('Please enter text', 'warning');
-        return;
+          const m = moodMap[mood] || moodMap.neutral;
+          document.getElementById('moodEmoji').textContent = m[0];
+          document.getElementById('moodText').textContent = m[1];
+        };
       }
 
-      const signs = TranslationEngine.translateTextToSign(text);
-      
-      // Display sign sequence
-      const html = signs.map((sign, index) => `
-        <div class="sign-item p-2 mb-2" style="background: var(--bg-light); border-radius: 8px;">
-          <div class="flex justify-between align-center">
-            <div>
-              <div style="font-weight: 600;">${sign.word.toUpperCase()}</div>
-              <div class="text-muted" style="font-size: 12px;">${sign.description}</div>
-            </div>
-            <div class="badge-info">${index + 1}</div>
-          </div>
-        </div>
-      `).join('');
-      
-      document.getElementById('signSequence').innerHTML = html;
-      
-      // Animate avatar
-      AvatarAnimator.animateSignSequence(signs);
-    });
+      await cameraHandler.init();
+      Utils.showToast('Camera started', 'success');
 
-    // Animation controls
-    document.getElementById('playAnimationBtn').addEventListener('click', () => {
-      const text = document.getElementById('textInput').value.trim();
-      if (text) {
-        const signs = TranslationEngine.translateTextToSign(text);
-        AvatarAnimator.animateSignSequence(signs);
-      }
-    });
+    } catch (err) {
+      console.error(err);
+      Utils.showToast('Failed to start camera', 'error');
+    }
+  });
 
-    document.getElementById('pauseAnimationBtn').addEventListener('click', () => {
-      AvatarAnimator.clearQueue();
-    });
+  document.getElementById('clearBtn').onclick = () => {
+    document.getElementById('translationOutput').value = '';
+  };
 
-    document.getElementById('repeatAnimationBtn').addEventListener('click', () => {
-      document.getElementById('playAnimationBtn').click();
-    });
+  document.getElementById('speakBtn').onclick = () => {
+    const text = document.getElementById('translationOutput').value;
+    if (text) TranslationEngine.speakText(text);
+  };
 
-    // Initialize on load
-    window.addEventListener('DOMContentLoaded', init);
+  document.getElementById('copyBtn').onclick = () => {
+    const text = document.getElementById('translationOutput').value;
+    if (text) Utils.copyToClipboard(text);
+  };
 
-    // Cleanup on unload
-    window.addEventListener('beforeunload', () => {
-      stopDetection();
-      FaceDetection.cleanup();
-      CameraHandler.cleanup();
-    });
-  </script>
+  window.addEventListener('DOMContentLoaded', init);
+
+  window.addEventListener('beforeunload', () => {
+    if (cameraHandler) cameraHandler.cleanup();
+  });
+</script>
+
 </body>
 </html>
